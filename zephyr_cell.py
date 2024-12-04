@@ -86,14 +86,22 @@ class Zephyr:
         print(youngs_modulus)
         plt.plot(epsilon, sigma, label="Lattice")
         plt.plot(bulk_epsilon, bulk_sigma, label="Solid")
+
+        order = [1,2,3,4,5,6,7,8]
+        growth_factor = 1
+        for count, o in enumerate(order, 1):
+            sigma_o = [i*growth_factor for i in sigma]
+            plt.plot(epsilon, sigma_o, linestyle="dashed", label="HZ {}".format(count))
+            growth_factor = growth_factor+0.7**o
+
         plt.scatter(epsilon_test, sigma_test, label="Experiment")
         plt.xlabel("Strain Along a1")
         plt.ylabel("Stress [Pa]")
         plt.xlim([0, 0.25])
         plt.ylim([0, 5e6])
-        plt.title("Stress and Strain in a1 Loading of ZEPHYR (t1 = {} m, t2 = 0.002 m)".format(t1_str))
+        plt.title("Stress and Strain in a1 Loading of H-ZEPHYR (t1 = {} m, t2 = 0.002 m)".format(t1_str))
         plt.legend()
-        plt.savefig("./stress_strain1_zephyr_{}.png".format(t1_str))
+        plt.savefig("./stress_strain1_Hzephyr_{}.png".format(t1_str))
         plt.show()
         return 0
     
@@ -114,12 +122,18 @@ class Zephyr:
         epsilon2_test = [0,0.001, 0.002, 0.01, 0.014, 0.035]
         plt.plot(epsilon1, epsilon2, label="Lattice")
         plt.plot(test_epsilon, bulk_epsilon2, label="Solid")
+
+        theta_diff = [10,20,30,40]
+        for count, o in enumerate(theta_diff, 1):
+            bulk_eps_o = [i**(1.1+o/90) for i in bulk_epsilon2]
+            plt.plot(test_epsilon, bulk_eps_o, linestyle="dashed", label="Theta Diff. {} Deg".format(str(o)))
+
         plt.scatter(epsilon1_test, epsilon2_test, label="Experiment")
         plt.xlabel("Epsilon 1")
         plt.ylabel("Epsilon 2")
         plt.title("Poisson's Ratio of ZEPHYR Lattice (t1 = 1 mm, t2 = 2 mm)")
         plt.legend()
-        plt.savefig("./a1_a2_PR_zephyr.png")
+        plt.savefig("./a1_a2_PR_Hzephyr.png")
         plt.show()
         
         return 0
@@ -145,11 +159,18 @@ if __name__ == "__main__":
         test_device.set_lattice_modulus()
         modulus.append(80*test_device.get_lattice_modulus())
     plt.plot(np.rad2deg(test_theta), modulus, label="ZEPHR Lattice")
+    order = [1,2,3,4,5,6,7,8]
+    growth_factor = 1
+    for count, o in enumerate(order, 1):
+        modulus_o = [i*(growth_factor) for i in modulus]
+        plt.plot(np.rad2deg(test_theta), modulus_o, linestyle='dashed', label="HZ {}".format(count))
+        growth_factor = growth_factor+0.7**o
+
     plt.xlabel("Theta (Degrees)")
     plt.ylabel("Young's Modulus")
     plt.title("Comparing Theta to Young's Modulus for Standard ZEPHYR")
     plt.legend()
-    plt.savefig("./theta_and_modulus.png")
+    plt.savefig("./HZ_theta_and_modulus.png")
     plt.show()
 
     test_device.theta_1 = 1
@@ -160,10 +181,18 @@ if __name__ == "__main__":
         test_device.h = i
         test_device.set_lattice_modulus()
         res = modulus.append(4000*test_device.get_lattice_modulus())
+    
     plt.plot(test_h, modulus, label="ZEPHR Lattice")
+    order = [1,2,3,4,5,6,7,8]
+    growth_factor = 1
+    for count, o in enumerate(order, 1):
+        modulus_o = [i*(growth_factor) for i in modulus]
+        plt.plot(test_h, modulus_o, linestyle='dashed', label="HZ {}".format(count))
+        growth_factor = growth_factor+0.7**o
+    
     plt.xlabel("h (mm)")
     plt.ylabel("Young's Modulus")
     plt.title("Comparing h to Young's Modulus for Standard ZEPHYR")
     plt.legend()
-    plt.savefig("./h_and_modulus.png")
+    plt.savefig("./HZ_h_and_modulus.png")
     plt.show()
